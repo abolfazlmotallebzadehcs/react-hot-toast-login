@@ -1,5 +1,6 @@
 import React, { use, useId, useState } from "react";
 import toast from "react-hot-toast";
+import loginSchema from "../validators/loginValidator.js";
 import "./App.css";
 const App = () => {
   const [username, setUsername] = useState("");
@@ -9,15 +10,15 @@ const App = () => {
     toast.loading("اطلاعات در حال برسی...", {
       duration:2000,
     });
+    const newUser = {username, password};
+    const result = loginSchema.safeParse(newUser);
     setTimeout(() => {
-      if(username.length<8){
-        return toast.error("نام کاربری باید حداقل ۸ کاراکتر باشد.");
+      if(result.success){
+        return toast.success("ورود با موفقیت انجام شد.");
+      } else {
+        return toast.error(result.error.issues[0].message);
       }
-      if(password.length<8){
-        return toast.error("گذرواژه باید حداقل ۸ کاراکتر باشد.");
-      }
-      toast.success("ورود با موفقیت انجام شد.");
-    }, 2000);
+    }, 4000);
   };
 
   return (
